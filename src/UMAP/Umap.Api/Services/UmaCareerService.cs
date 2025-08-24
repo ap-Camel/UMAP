@@ -6,7 +6,7 @@ namespace Umap.Api.Services
     {
         public UmaCareerService() { }
 
-        public CurrentScreen GetCurrentScreen()
+        public ScreenTitles GetCurrentScreen()
         {
 
 

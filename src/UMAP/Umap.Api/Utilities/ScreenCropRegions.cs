@@ -3,50 +3,47 @@ using static Umap.Api.Services.impl.ScreenCropService;
 
 namespace Umap.Api.Utilities
 {
-    public class ScreenCropLocations
+    public class ScreenCropRegions
     {
-        public static Dictionary<string, LocationInfo> LocationsDictionary = new Dictionary<string, LocationInfo>
+        public static List<RegionInfo> RegionsList = new List<RegionInfo>
         {
-            { 
-                CareerScreenLocations.mainSectionIndicator.ToString(), 
-                new LocationInfo { Name = CareerScreenLocations.mainSectionIndicator.ToString(), Screen = CurrentScreen.Career, x = 186, y = 53, width = 350, height = 27 } 
-            },
-            {
-                CareerScreenLocations.turnName.ToString(),
-                new LocationInfo { Name = CareerScreenLocations.turnName.ToString(), Screen = CurrentScreen.Career, x = 320, y = 88, width = 240, height = 26 }
-            },
-            {
-                CareerScreenLocations.numberOfTurnsLeftUntilGoal.ToString(),
-                new LocationInfo { Name = CareerScreenLocations.numberOfTurnsLeftUntilGoal.ToString(), Screen = CurrentScreen.Career, x = 322, y = 145, width = 140, height = 65 }
-            },
-            {
-                CareerScreenLocations.nameOfGoal.ToString(),
-                new LocationInfo { Name = CareerScreenLocations.nameOfGoal.ToString(), Screen = CurrentScreen.Career, x = 564, y = 120, width = 500, height = 32 }
-            },
-            {
-                CareerScreenLocations.energyBar.ToString(),
-                new LocationInfo { Name = CareerScreenLocations.energyBar.ToString(), Screen = CurrentScreen.Career, x = 551, y = 213, width = 298, height = 11 }
-            },
+            new RegionInfo { x = 186,   y = 53,     width = 350,    height = 27,   Screen = ScreenTitles.CAREER,    region = Regions.CURRENT_SCREEN_INDICATOR },
+            new RegionInfo { x = 320,   y = 88,     width = 240,    height = 26,   Screen = ScreenTitles.CAREER,    region = Regions.TURN_NAME },
+            new RegionInfo { x = 322,   y = 145,    width = 140,    height = 65,   Screen = ScreenTitles.CAREER,    region = Regions.TURNS_LEFT_UNTIL_GOAL },
+            new RegionInfo { x = 564,   y = 120,    width = 500,    height = 32,   Screen = ScreenTitles.CAREER,    region = Regions.GOAL_NAME },
+            new RegionInfo { x = 551,   y = 213,    width = 298,    height = 11,   Screen = ScreenTitles.CAREER,    region = Regions.ENERGY_BAR },
+            new RegionInfo { x = 912,   y = 197,    width = 70,     height = 33,   Screen = ScreenTitles.CAREER,    region = Regions.MOOD_INDICATOR },
+            new RegionInfo { x = 336,   y = 909,    width = 592,    height = 86,   Screen = ScreenTitles.CAREER,    region = Regions.STATS_TABLE },
+            new RegionInfo { x = 341,   y = 1024,   width = 189,    height = 120,  Screen = ScreenTitles.CAREER,    region = Regions.REST_BUTTON },
+            new RegionInfo { x = 544,   y = 1024,   width = 287,    height = 120,  Screen = ScreenTitles.CAREER,    region = Regions.TRAINING_BUTTON },
+            new RegionInfo { x = 846,   y = 1024,   width = 186,    height = 120,  Screen = ScreenTitles.CAREER,    region = Regions.SKILLS_BUTTON },
+            new RegionInfo { x = 393,   y = 1170,   width = 186,    height = 120,  Screen = ScreenTitles.CAREER,    region = Regions.INFIRMARY_BUTTON },
+            new RegionInfo { x = 594,   y = 1170,   width = 186,    height = 120,  Screen = ScreenTitles.CAREER,    region = Regions.RECREATION_BUTTON },
+            new RegionInfo { x = 795,   y = 1170,   width = 186,    height = 120,  Screen = ScreenTitles.CAREER,    region = Regions.RACES_BUTTON },
+
+            new RegionInfo { x = 210, y = 1294, width = 124, height = 79, Screen = ScreenTitles.TRAINING, region = Regions.BACK_BUTTON },
+            new RegionInfo { x = 357, y = 1110, width = 130, height = 130, Screen = ScreenTitles.TRAINING, region = Regions.SPEED_TRAINING_BUTTON_NOT_SELECTED },
+            new RegionInfo { x = 491, y = 1110, width = 130, height = 130, Screen = ScreenTitles.TRAINING, region = Regions.STAMINA_TRAINING_BUTTON_NOT_SELECTED },
+            new RegionInfo { x = 624, y = 1110, width = 130, height = 130, Screen = ScreenTitles.TRAINING, region = Regions.POWER_TRAINING_BUTTON_NOT_SELECTED },
+            new RegionInfo { x = 752, y = 1000, width = 140, height = 185, Screen = ScreenTitles.TRAINING, region = Regions.GUT_TRAINING_BUTTON_NOT_SELECTED },
+            new RegionInfo { x = 892, y = 1110, width = 130, height = 130, Screen = ScreenTitles.TRAINING, region = Regions.WIT_TRAINING_BUTTON_NOT_SELECTED },
+
+            new RegionInfo { x = 351, y = 1000, width = 140, height = 185, Screen = ScreenTitles.TRAINING, region = Regions.SPEED_TRAINING_BUTTON_IS_SELECTED },
+            new RegionInfo { x = 485, y = 1000, width = 140, height = 185, Screen = ScreenTitles.TRAINING, region = Regions.STAMINA_TRAINING_BUTTON_IS_SELECTED },
+            new RegionInfo { x = 618, y = 1000, width = 140, height = 185, Screen = ScreenTitles.TRAINING, region = Regions.POWER_TRAINING_BUTTON_IS_SELECTED },
+            new RegionInfo { x = 752, y = 1000, width = 140, height = 185, Screen = ScreenTitles.TRAINING, region = Regions.GUT_TRAINING_BUTTON_IS_SELECTED },
+            new RegionInfo { x = 886, y = 1000, width = 140, height = 185, Screen = ScreenTitles.TRAINING, region = Regions.WIT_TRAINING_BUTTON_IS_SELECTED },
+            new RegionInfo { x = 1062, y = 250, width = 96, height = 101, Screen = ScreenTitles.TRAINING, region = Regions.FRIENDSHIP_TRAINING_FIRST },
+            new RegionInfo { x = 1062, y = 490, width = 96, height = 111, Screen = ScreenTitles.TRAINING, region = Regions.FRIENDSHIP_TRAINING_THIRD },
+            new RegionInfo { x = 1052, y = 200, width = 156, height = 650, Screen = ScreenTitles.TRAINING, region = Regions.FRIENDSHIP_TRAINING_ALL },
+            new RegionInfo { x = 363, y = 181, width = 208, height = 272, Screen = ScreenTitles.TRAINING, region = Regions.FRIENDSHIP_PARTNER_CARD_IMAGE },
+            new RegionInfo { x = 595, y = 170, width = 464, height = 70, Screen = ScreenTitles.TRAINING, region = Regions.FRIENDSHIP_PARTNER_CARD_TITLE },
+            new RegionInfo { x = 598, y = 242, width = 147, height = 35, Screen = ScreenTitles.TRAINING, region = Regions.FRIENDSHIP_PARTNER_CARD_LEVEL },
         };
 
 
         public static List<ObjectCoordinates> list = new List<ObjectCoordinates>
         {
-            new ObjectCoordinates { x = 186, y = 53, width = 350, height = 27, name = "mainSectionIndicator", screenSection = ScreenSection.career },
-            new ObjectCoordinates { x = 320, y = 88, width = 240, height = 26, name = "turnName", screenSection = ScreenSection.career },
-            new ObjectCoordinates { x = 322, y = 145, width = 140, height = 65, name = "numberOfTurnsLeftUntilGoal", screenSection = ScreenSection.career },
-            new ObjectCoordinates { x = 564, y = 120, width = 500, height = 32, name = "nameOfGoal", screenSection = ScreenSection.career },
-            new ObjectCoordinates { x = 551, y = 213, width = 298, height = 11, name = "energyBard", screenSection = ScreenSection.career },
-            //new ObjectCoordinates { x = 1069, y = 341, width = 81, height = 5, name = "CharacterTraining01EnergyBard", screenSection = ScreenSection.career },
-            //new ObjectCoordinates { x = 912, y = 197, width = 70, height = 33, name = "moodIndicator", screenSection = ScreenSection.career }, // size is fixed, doesn't seem to be changing based on mood name.
-            //new ObjectCoordinates { x = 336, y = 909, width = 592, height = 86, name = "statsTable", screenSection = ScreenSection.career },
-            //new ObjectCoordinates { x = 341, y = 1024, width = 189, height = 120, name = "restingButton", screenSection = ScreenSection.career },
-            //new ObjectCoordinates { x = 544, y = 1024, width = 287, height = 120, name = "trainingButton", screenSection = ScreenSection.career },
-            //new ObjectCoordinates { x = 846, y = 1024, width = 186, height = 120, name = "skillsButton", screenSection = ScreenSection.career },
-            //new ObjectCoordinates { x = 393, y = 1170, width = 186, height = 120, name = "infermaryButton", screenSection = ScreenSection.career },
-            //new ObjectCoordinates { x = 594, y = 1170, width = 186, height = 120, name = "recreationButton", screenSection = ScreenSection.career },
-            //new ObjectCoordinates { x = 795, y = 1170, width = 186, height = 120, name = "racesButton", screenSection = ScreenSection.career },
-
             //new ObjectCoordinates { x = 210, y = 1294, width = 124, height = 79, name = "backButton", screenSection = ScreenSection.training },
             //new ObjectCoordinates { x = 357, y = 1110, width = 130, height = 130, name = "speedTrainingNotSelectedButton", screenSection = ScreenSection.training },
             //new ObjectCoordinates { x = 491, y = 1110, width = 130, height = 130, name = "staminaTrainingNotSelectedButton", screenSection = ScreenSection.training },
