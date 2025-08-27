@@ -1,5 +1,4 @@
 ﻿using Umap.Api.Models;
-using static Umap.Api.Services.impl.ScreenCropService;
 
 namespace Umap.Api.Utilities
 {
@@ -39,69 +38,44 @@ namespace Umap.Api.Utilities
             new RegionInfo { x = 363, y = 181, width = 208, height = 272, Screen = ScreenTitles.TRAINING, region = Regions.FRIENDSHIP_PARTNER_CARD_IMAGE },
             new RegionInfo { x = 595, y = 170, width = 464, height = 70, Screen = ScreenTitles.TRAINING, region = Regions.FRIENDSHIP_PARTNER_CARD_TITLE },
             new RegionInfo { x = 598, y = 242, width = 147, height = 35, Screen = ScreenTitles.TRAINING, region = Regions.FRIENDSHIP_PARTNER_CARD_LEVEL },
-        };
 
+            new RegionInfo { x = 300, y = 285, width = 463, height = 63, Screen = ScreenTitles.EVENT, region = Regions.EVENT_NAME },
+            new RegionInfo { x = 336, y = 789, width = 694, height = 103, Screen = ScreenTitles.EVENT, region = Regions.EVENT_CHOICE_FIRST_OF_TWO },
+            new RegionInfo { x = 336, y = 927, width = 694, height = 103, Screen = ScreenTitles.EVENT, region = Regions.EVENT_CHOICE_SECOND_OF_TWO },
 
-        public static List<ObjectCoordinates> list = new List<ObjectCoordinates>
-        {
-            //new ObjectCoordinates { x = 210, y = 1294, width = 124, height = 79, name = "backButton", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 357, y = 1110, width = 130, height = 130, name = "speedTrainingNotSelectedButton", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 491, y = 1110, width = 130, height = 130, name = "staminaTrainingNotSelectedButton", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 624, y = 1110, width = 130, height = 130, name = "strengthTrainingNotSelectedButton", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 758, y = 1110, width = 130, height = 130, name = "gutsTrainingNotSelectedButton", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 892, y = 1110, width = 130, height = 130, name = "witsTrainingNotSelectedButton", screenSection = ScreenSection.training },
+            new RegionInfo { x = 338, y = 855, width = 120, height = 55, Screen = ScreenTitles.TRAINING, region = Regions.TRAINING_POINTS_ADDED_SPEED },
+            new RegionInfo { x = 457, y = 855, width = 120, height = 55, Screen = ScreenTitles.TRAINING, region = Regions.TRAINING_POINTS_ADDED_STAMINA },
+            new RegionInfo { x = 576, y = 855, width = 120, height = 55, Screen = ScreenTitles.TRAINING, region = Regions.TRAINING_POINTS_ADDED_POWER },
+            new RegionInfo { x = 693, y = 855, width = 120, height = 55, Screen = ScreenTitles.TRAINING, region = Regions.TRAINING_POINTS_ADDED_GUT },
+            new RegionInfo { x = 811, y = 855, width = 120, height = 55, Screen = ScreenTitles.TRAINING, region = Regions.TRAINING_POINTS_ADDED_WIT },
+            new RegionInfo { x = 937, y = 855, width = 120, height = 55, Screen = ScreenTitles.TRAINING, region = Regions.TRAINING_POINTS_ADDED_SKILLS },
 
-            //new ObjectCoordinates { x = 351, y = 1000, width = 140, height = 185, name = "speedTrainingIsSelectedButton", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 485, y = 1000, width = 140, height = 185, name = "staminaTrainingIsSelectedButton", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 618, y = 1000, width = 140, height = 185, name = "strengthTrainingIsSelectedButton", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 752, y = 1000, width = 140, height = 185, name = "gutsTrainingIsSelectedButton", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 886, y = 1000, width = 140, height = 185, name = "witsTrainingIsSelectedButton", screenSection = ScreenSection.training },
+            new RegionInfo { x = 705, y = 1074, width = 290, height = 163, Screen = ScreenTitles.CAREER_RACE_DAY, region = Regions.RACE_DAY_RACE_BUTTON },
+            new RegionInfo { x = 386, y = 1118, width = 289, height = 117, Screen = ScreenTitles.CAREER_RACE_DAY, region = Regions.RACE_DAY_SKILLS_BUTTON },
 
-            //new ObjectCoordinates { x = 1062, y = 250, width = 96, height = 101, name = "firstFriendshipTraining", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 1062, y = 490, width = 96, height = 111, name = "thirdFriendshipTraining", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 1052, y = 200, width = 156, height = 650, name = "allFriendshipTraining", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 363, y = 181, width = 208, height = 272, name = "friendshipPartnerCardImage", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 595, y = 170, width = 464, height = 70, name = "friendshipPartnerCardTitles", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 598, y = 242, width = 147, height = 35, name = "friendshipPartnerCardLevel", screenSection = ScreenSection.training },
+            new RegionInfo { x = 564, y = 120, width = 386, height = 64, Screen = ScreenTitles.RACE_LIST, region = Regions.RACE_LIST_GOAL_NAME },
+            new RegionInfo { x = 647, y = 498, width = 403, height = 168, Screen = ScreenTitles.RACE_LIST, region = Regions.RACE_LIST_WEATHER_INFO },
+            new RegionInfo { x = 551, y = 800, width = 480, height = 43, Screen = ScreenTitles.RACE_LIST, region = Regions.RACE_LIST_FIRST_RACE_INFO },
+            new RegionInfo { x = 595, y = 866, width = 235, height = 34, Screen = ScreenTitles.RACE_LIST, region = Regions.RACE_LIST_FIRST_RACE_FANS_GAIN },
+            new RegionInfo { x = 911, y = 850, width = 108, height = 28, Screen = ScreenTitles.RACE_LIST, region = Regions.RACE_LIST_FIRST_RACE_COMPATEBILITY01 },
+            new RegionInfo { x = 911, y = 882, width = 108, height = 28, Screen = ScreenTitles.RACE_LIST, region = Regions.RACE_LIST_FIRST_RACE_COMPATEBILITY02 },
+            new RegionInfo { x = 700, y = 1138, width = 298, height = 84, Screen = ScreenTitles.RACE_LIST, region = Regions.RACE_LIST_RACE_BUTTON },
+            new RegionInfo { x = 377, y = 1138, width = 298, height = 84, Screen = ScreenTitles.RACE_LIST, region = Regions.RACE_LIST_PREDICTIONS_BUTTON },
 
-            //new ObjectCoordinates { x = 300, y = 285, width = 463, height = 63, name = "eventName", screenSection = ScreenSection.other },
-            //new ObjectCoordinates { x = 336, y = 789, width = 694, height = 103, name = "twoChoicesFirstChoice", screenSection = ScreenSection.eventt },
-            //new ObjectCoordinates { x = 336, y = 927, width = 694, height = 103, name = "twoChoicesSecondChoice", screenSection = ScreenSection.eventt },
+            new RegionInfo { x = 706, y = 966, width = 298, height = 84, Screen = ScreenTitles.RACE_LIST, region = Regions.RACE_LIST_RACE_DETAILS_RACE_BUTTON },
+            new RegionInfo { x = 375, y = 966, width = 298, height = 84, Screen = ScreenTitles.RACE_LIST, region = Regions.RACE_LIST_RACE_DETAILS_CANCEL_BUTTON },
+            new RegionInfo { x = 327, y = 735, width = 724, height = 94, Screen = ScreenTitles.RACE_LIST, region = Regions.RACE_LIST_RACE_DETAILS_RACE_INFORMATION },
 
-            //new ObjectCoordinates { x = 338, y = 855, width = 120, height = 55, name = "pointsAddedSpeed", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 457, y = 855, width = 120, height = 55, name = "pointsAddedStamina", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 576, y = 855, width = 120, height = 55, name = "pointsAddedPower", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 693, y = 855, width = 120, height = 55, name = "pointsAddedGut", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 811, y = 855, width = 120, height = 55, name = "pointsAddedWit", screenSection = ScreenSection.training },
-            //new ObjectCoordinates { x = 937, y = 855, width = 120, height = 55, name = "pointsAddedSkill", screenSection = ScreenSection.training },
+            new RegionInfo { x = 476, y = 1234, width = 202, height = 80, Screen = ScreenTitles.RACING, region = Regions.RACING_RESULTS_BUTTON },
+            new RegionInfo { x = 698, y = 1234, width = 202, height = 80, Screen = ScreenTitles.RACING, region = Regions.RACING_RACE_BUTTON },
+            new RegionInfo { x = 805, y = 230, width = 357, height = 261, Screen = ScreenTitles.RACING, region = Regions.RACING_STATS_PANEL },
+            new RegionInfo { x = 806, y = 506, width = 357, height = 117, Screen = ScreenTitles.RACING, region = Regions.RACING_APTITUDE_PANEL },
+            new RegionInfo { x = 806, y = 637, width = 357, height = 64, Screen = ScreenTitles.RACING, region = Regions.RACING_MOOD_PANEL },
+            new RegionInfo { x = 806, y = 714, width = 357, height = 141, Screen = ScreenTitles.RACING, region = Regions.RACING_STRATEGY_PANEL },
 
-            //new ObjectCoordinates { x = 705, y = 1074, width = 290, height = 163, name = "raceButtonOnRaceDay", screenSection = ScreenSection.other },
-            //new ObjectCoordinates { x = 386, y = 1118, width = 289, height = 117, name = "raceButtonOnRaceDay", screenSection = ScreenSection.other },
-
-            //new ObjectCoordinates { x = 564, y = 120, width = 386, height = 64, name = "nameOfGoalInRaceScreen", screenSection = ScreenSection.raceList },
-            //new ObjectCoordinates { x = 647, y = 498, width = 403, height = 168, name = "raceInformationWeather", screenSection = ScreenSection.raceList },
-            //new ObjectCoordinates { x = 343, y = 787, width = 687, height = 145, name = "firstRaceInRaceList", screenSection = ScreenSection.raceList },
-            //new ObjectCoordinates { x = 551, y = 800, width = 480, height = 43, name = "firstRaceInRaceListNameInfo", screenSection = ScreenSection.raceList },
-            //new ObjectCoordinates { x = 595, y = 866, width = 235, height = 34, name = "firstRaceInRaceListFansGain", screenSection = ScreenSection.raceList },
-            //new ObjectCoordinates { x = 911, y = 850, width = 108, height = 28, name = "firstRaceInRaceListCompatebility01", screenSection = ScreenSection.raceList },
-            //new ObjectCoordinates { x = 911, y = 882, width = 108, height = 28, name = "firstRaceInRaceListCompatebility02", screenSection = ScreenSection.raceList },
-            //new ObjectCoordinates { x = 700, y = 1138, width = 298, height = 84, name = "raceListRaceButton", screenSection = ScreenSection.raceList },
-            //new ObjectCoordinates { x = 377, y = 1138, width = 298, height = 84, name = "raceListPredictionsButton", screenSection = ScreenSection.raceList },
-
-            //new ObjectCoordinates { x = 706, y = 966, width = 298, height = 84, name = "raceDetailRaceButton", screenSection = ScreenSection.raceList },
-            //new ObjectCoordinates { x = 375, y = 966, width = 298, height = 84, name = "raceDetailCancelButton", screenSection = ScreenSection.raceList },
-            //new ObjectCoordinates { x = 327, y = 735, width = 724, height = 94, name = "raceDetailRaceInformation", screenSection = ScreenSection.raceList },
-
-            //new ObjectCoordinates { x = 476, y = 1234, width = 202, height = 80, name = "raceScreenResultsButton", screenSection = ScreenSection.racing },
-            //new ObjectCoordinates { x = 698, y = 1234, width = 202, height = 80, name = "raceScreenRaceButton", screenSection = ScreenSection.racing },
-            //new ObjectCoordinates { x = 805, y = 230, width = 357, height = 261, name = "raceScreenStatsPanel", screenSection = ScreenSection.racing },
-            //new ObjectCoordinates { x = 806, y = 506, width = 357, height = 117, name = "raceScreenStatsPanel", screenSection = ScreenSection.racing },
-            //new ObjectCoordinates { x = 806, y = 637, width = 357, height = 64, name = "raceScreenAptitudePanel", screenSection = ScreenSection.racing },
-            //new ObjectCoordinates { x = 806, y = 714, width = 357, height = 141, name = "raceScreenStrategyPanel", screenSection = ScreenSection.racing },
-
-            //new ObjectCoordinates { x = 444, y = 1185, width = 496, height = 76, name = "afterRaceFinishTapInstruction", screenSection = ScreenSection.racing },
-            //new ObjectCoordinates { x = 540, y = 1239, width = 298, height = 84, name = "afterRaceFinishFirstNextButton", screenSection = ScreenSection.racing },
-            //new ObjectCoordinates { x = 704, y = 1230, width = 288, height = 117, name = "afterRaceFinishSecondNextButton", screenSection = ScreenSection.racing },
+            new RegionInfo { x = 444, y = 1185, width = 496, height = 76, Screen = ScreenTitles.RACING, region = Regions.RACING_FINISH_TAP_TO_SKIP },
+            new RegionInfo { x = 540, y = 1239, width = 298, height = 84, Screen = ScreenTitles.RACING, region = Regions.RACING_FINISH_FIRST_NEXT_BUTTON },
+            new RegionInfo { x = 704, y = 1230, width = 288, height = 117, Screen = ScreenTitles.RACING, region = Regions.RACING_FINISH_SECOND_NEXT_BUTTON },
         };
     }
 }

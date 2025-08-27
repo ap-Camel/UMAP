@@ -5,8 +5,10 @@
         CAREER,
         TRAINING,
         EVENT,
+        CAREER_RACE_DAY,
         RACE_LIST,
-        RACE,
+        RACING,
+        LEARN,
         UNKNOW
     }
 }
