@@ -22,6 +22,7 @@ namespace Umap.Api
                 builder.Services.AddSingleton<IUmaMusumeWindowBringToFrontService, UmaMusumeWindowBringToFrontService>();
                 builder.Services.AddSingleton<IWindowBoundsService, WindowBoundsService>();
                 builder.Services.AddSingleton<IWindowService, WindowService>();
+                builder.Services.AddSingleton<ICareerService, CareerService>();
 
 
                 builder.Services.AddControllers();

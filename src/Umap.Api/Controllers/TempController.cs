@@ -15,6 +15,8 @@ namespace Umap.Api.Controllers
     [Route("[controller]")]
     public class TempController : ControllerBase
     {
+        private readonly ICareerService _careerService;
+
         private readonly IScreenCaptureService _screenCaptureService;
         private readonly IScreenCropService _screenCropService;
         private readonly IWindowService _windowService;
@@ -22,20 +24,21 @@ namespace Umap.Api.Controllers
         private readonly ILogger<TestController> _logger;
 
         public TempController(ILogger<TestController> logger, IScreenCaptureService screenCaptureService, IScreenCropService screenCropService, 
-            IWindowService windowService, IPaddleOcr paddleOcr)
+            IWindowService windowService, IPaddleOcr paddleOcr, ICareerService careerService)
         {
             _logger = logger;
             _screenCaptureService = screenCaptureService;
             _screenCropService = screenCropService;
             _paddleOcr = paddleOcr;
             _windowService = windowService;
+            _careerService = careerService;
         }
 
 
         [HttpPost("Start")]
         public async Task StartCareerTest()
         {
-           
+            await _careerService.ExecuteTurn();
         }
     }
 }

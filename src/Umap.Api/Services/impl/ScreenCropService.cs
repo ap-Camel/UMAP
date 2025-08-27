@@ -1,11 +1,18 @@
-﻿using System.Drawing;
+﻿using OpenCvSharp;
+using System.Drawing;
+using Umap.Api.Models;
 using static Umap.Api.Services.impl.WindowService;
 
 namespace Umap.Api.Services.impl
 {
     public class ScreenCropService : IScreenCropService
     {
-        public ScreenCropService() { }
+        private readonly IWindowService _windowService;
+
+        public ScreenCropService(IWindowService windowService)
+        {
+            _windowService = windowService;
+        }
 
 
         private const int UmaMusumeWindowWidth = 2386;  //2386
@@ -110,6 +117,36 @@ namespace Umap.Api.Services.impl
             var cropped = CropWithClone(bitmap, cropRect);
 
             return cropped;
+        }
+
+        public Bitmap CropRegion(Bitmap image, RegionInfo region)
+        {
+            int width = region.width;
+            int height = region.height;
+
+            var window = _windowService.GetWindowCoordinates();
+
+            var widthSubtract = (window.width / (UmaMusumeWindowWidth * 1.0f));
+            var heightSubtract = (window.height / (UmaMusumeWindowHeight * 1.0f));
+
+            var fixedRecWidth = (int)Math.Ceiling(width * widthSubtract);
+            var fixedRecHeight = (int)Math.Ceiling(height * heightSubtract);
+
+            var xCoordinates = (int)Math.Ceiling(region.x * widthSubtract);
+            var YCoordinates = (int)Math.Ceiling(region.y * heightSubtract);
+
+            //var tempX = xCoordinates * widthSubtract;
+            //var tempY = yCoordinates * heightSubtract;
+
+            int fixedX = xCoordinates + window.x;
+            int fixedY = YCoordinates + window.y;
+
+
+            var cropRect = new Rectangle(fixedX, fixedY, fixedRecWidth, fixedRecHeight);
+            cropRect.Intersect(new Rectangle(0, 0, image.Width, image.Height));
+
+            // Clone returns a new Bitmap containing just that region:
+            return image.Clone(cropRect, image.PixelFormat);
         }
 
         public Bitmap CropRectangle(Rectangle rectangle)
