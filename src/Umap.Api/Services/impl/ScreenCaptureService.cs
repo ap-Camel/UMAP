@@ -81,11 +81,11 @@ namespace Umap.Api.Services.impl
         public void EnablePerMonitorDpiAwareness()
         {
             // Must be called before any windows are created
-            if (!SetProcessDpiAwarenessContext(PER_MONITOR_AWARE_V2))
-            {
-                // Check Marshal.GetLastWin32Error() for details if false
-                throw new InvalidOperationException("Failed to set DPI awareness context");
-            }
+            //if (!SetProcessDpiAwarenessContext(PER_MONITOR_AWARE_V2))
+            //{
+            //    // Check Marshal.GetLastWin32Error() for details if false
+            //    throw new InvalidOperationException("Failed to set DPI awareness context");
+            //}
         }
 
         internal static class Gdi32

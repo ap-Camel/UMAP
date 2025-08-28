@@ -1,5 +1,6 @@
 ﻿using OpenCvSharp;
 using System.Drawing;
+using System.Drawing.Imaging;
 using Umap.Api.Models;
 using static Umap.Api.Services.impl.WindowService;
 
@@ -146,7 +147,9 @@ namespace Umap.Api.Services.impl
             cropRect.Intersect(new Rectangle(0, 0, image.Width, image.Height));
 
             // Clone returns a new Bitmap containing just that region:
-            return image.Clone(cropRect, image.PixelFormat);
+            var clone = image.Clone(cropRect, image.PixelFormat);
+            clone.ConvertFormat(PixelFormat.Format8bppIndexed);
+            return clone;
         }
 
         public Bitmap CropRectangle(Rectangle rectangle)
