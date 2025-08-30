@@ -1,6 +1,8 @@
 using System;
 using Umap.Api.Services;
 using Umap.Api.Services.impl;
+using Umap.Api.Testing;
+using Umap.Api.Testing.impl;
 
 namespace Umap.Api
 {
@@ -23,6 +25,7 @@ namespace Umap.Api
                 builder.Services.AddSingleton<IWindowBoundsService, WindowBoundsService>();
                 builder.Services.AddSingleton<IWindowService, WindowService>();
                 builder.Services.AddSingleton<ICareerService, CareerService>();
+                builder.Services.AddSingleton<IOcrTestingService, OcrTestingService>();
 
 
                 builder.Services.AddControllers();

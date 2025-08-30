@@ -13,7 +13,7 @@ namespace Umap.Api.Services.impl
         public string ReadTextFromImage(Bitmap image)
         {
             FullOcrModel model = LocalFullModels.EnglishV3;
-            Mat cvSharpMat = BitmapConverter.ToMat(image);
+            using Mat cvSharpMat = BitmapConverter.ToMat(image);
 
             using (PaddleOcrAll all = new PaddleOcrAll(model, PaddleDevice.Mkldnn())
             {
@@ -24,10 +24,10 @@ namespace Umap.Api.Services.impl
                 PaddleOcrResult result = all.Run(cvSharpMat);
                 Console.WriteLine("Detected all texts: \n" + result.Text);
                 //Console.WriteLine($"confidence: {result.sc}")
-                foreach (PaddleOcrResultRegion region in result.Regions)
-                {
-                    Console.WriteLine($"Text: {region.Text}, Score: {region.Score}, RectCenter: {region.Rect.Center}, RectSize:    {region.Rect.Size}, Angle: {region.Rect.Angle}");
-                }
+                //foreach (PaddleOcrResultRegion region in result.Regions)
+                //{
+                //    Console.WriteLine($"Text: {region.Text}, Score: {region.Score}, RectCenter: {region.Rect.Center}, RectSize:    {region.Rect.Size}, Angle: {region.Rect.Angle}");
+                //}
 
                 return result.Text;
             }
