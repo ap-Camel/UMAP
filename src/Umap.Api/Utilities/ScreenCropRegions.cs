@@ -8,7 +8,7 @@ namespace Umap.Api.Utilities
         {
             new RegionInfo { x = 186, y = 53, width = 293, height = 25, Screen = ScreenTitles.CAREER, region = Regions.CURRENT_SCREEN_INDICATOR },
             new RegionInfo { x = 320, y = 88, width = 240, height = 26, Screen = ScreenTitles.CAREER, region = Regions.TURN_NAME },
-            new RegionInfo { x = 322, y = 145, width = 140, height = 65, Screen = ScreenTitles.CAREER, region = Regions.TURNS_LEFT_UNTIL_GOAL },
+            new RegionInfo { x = 322, y = 145, width = 138, height = 63, Screen = ScreenTitles.CAREER, region = Regions.TURNS_LEFT_UNTIL_GOAL },
             new RegionInfo { x = 564, y = 120, width = 500, height = 32, Screen = ScreenTitles.CAREER, region = Regions.GOAL_NAME },
             new RegionInfo { x = 550, y = 209, width = 289, height = 10, Screen = ScreenTitles.CAREER, region = Regions.ENERGY_BAR },
             new RegionInfo { x = 912, y = 197, width = 70, height = 33, Screen = ScreenTitles.CAREER, region = Regions.MOOD_INDICATOR },

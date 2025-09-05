@@ -52,8 +52,9 @@ namespace Umap.Api.Services.impl
                 var energybarImage = _screenCropService.CropRegion(windowScreenShot, _regions[Regions.ENERGY_BAR]);
                 var energyPercentage = GetEnergyPercentage(energybarImage);
 
-                var numberOfTurnsImage = _screenCropService.CropRegion(windowScreenShot, _regions[Regions.TURNS_LEFT_UNTIL_GOAL]);
-                var numberOfTurnsUntilGoal = GetNumberOfTurnsUntilGoal(numberOfTurnsImage);
+                //NOTE: this not nrcessary for now, better to have each turn in db with race information and character's mandatory races.
+                //var numberOfTurnsImage = _screenCropService.CropRegion(windowScreenShot, _regions[Regions.TURNS_LEFT_UNTIL_GOAL]);
+                //var numberOfTurnsUntilGoal = GetNumberOfTurnsUntilGoal(numberOfTurnsImage);
 
 
                 return;

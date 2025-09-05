@@ -19,12 +19,17 @@ namespace Umap.Api.Controllers
         }
 
 
-        [HttpPost("testOcr")]
-        public async Task<ActionResult<OcrTestingResult>> TestOcr()
+        [HttpPost("testPaddleOcr")]
+        public async Task<ActionResult<OcrTestingResult>> TestPaddleOcr()
         {
             return _testingOcr.TestingPaddleOcr();
         }
 
+        [HttpPost("testTesseractOcr")]
+        public async Task<ActionResult<OcrTestingResult>> TestTesseractOcr()
+        {
+            return _testingOcr.TestingTesseract();
+        }
 
     }
 }
