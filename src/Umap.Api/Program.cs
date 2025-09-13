@@ -1,4 +1,9 @@
+using Microsoft.Extensions.Configuration;
 using System;
+using System.Configuration;
+using Umap.Api.Data;
+using Umap.Api.Data.Impl;
+using Umap.Api.Data.Settings;
 using Umap.Api.Services;
 using Umap.Api.Services.impl;
 using Umap.Api.Testing;
@@ -17,6 +22,10 @@ namespace Umap.Api
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
 
+                var databaseSettings = new DatabaseSettings();
+                builder.Configuration.Bind("Database", databaseSettings);
+                builder.Services.AddSingleton<IDatabaseSettings>(databaseSettings);
+
                 // Add services to the container.
                 builder.Services.AddSingleton<IPaddleOcr, PaddleOcr>();
                 builder.Services.AddSingleton<IScreenCaptureService, ScreenCaptureService>();
@@ -26,6 +35,9 @@ namespace Umap.Api
                 builder.Services.AddSingleton<IWindowService, WindowService>();
                 builder.Services.AddSingleton<ICareerService, CareerService>();
                 builder.Services.AddSingleton<IOcrTestingService, OcrTestingService>();
+
+                builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
+                builder.Services.AddSingleton<IUmaMusumeRepository, UmaMusumeRepository>();
 
 
                 builder.Services.AddControllers();

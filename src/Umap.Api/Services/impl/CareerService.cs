@@ -3,6 +3,7 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using System.Drawing;
 using System.Drawing.Imaging;
+using Umap.Api.Data;
 using Umap.Api.Models;
 using Umap.Api.Utilities;
 
@@ -14,15 +15,18 @@ namespace Umap.Api.Services.impl
         private readonly IScreenCropService _screenCropService;
         private readonly IPaddleOcr _paddleOcr;
         private readonly IWindowService _windowService;
+        private readonly IUmaMusumeRepository _repository;
 
         private readonly List<CareerInfo> _turnHistory;
         private readonly Dictionary<Regions, RegionInfo> _regions;
 
-        public CareerService(IScreenCaptureService screenCaptureService, IScreenCropService screenCropService, IPaddleOcr paddleOcr, IWindowService windowService)
+        public CareerService(IScreenCaptureService screenCaptureService, IScreenCropService screenCropService, 
+            IPaddleOcr paddleOcr, IWindowService windowService/*, IUmaMusumeRepository repository*/)
         {
             _screenCaptureService = screenCaptureService;
             _screenCropService = screenCropService;
             _paddleOcr = paddleOcr;
+            //_repository = repository;
 
             _turnHistory = new List<CareerInfo>();
             _regions = ScreenCropRegions.RegionsList.ToDictionary(x => x.region, x => x);
