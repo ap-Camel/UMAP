@@ -4,7 +4,11 @@ namespace Umap.Api.Testing
 {
     public interface IOcrTestingService
     {
+        OcrTestingResult FeatureMatchingSolutionTesting();
         OcrTestingResult TestingPaddleOcr();
+        OcrTestingResult TestingPaddleOcrDigits();
         OcrTestingResult TestingTesseract();
+        OcrTestingResult TestingTesseractNumbersAndStatsIncrease();
+        OcrTestingResult TestingDigitsWithBoth();
     }
 }

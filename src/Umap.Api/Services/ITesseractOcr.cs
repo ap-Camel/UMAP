@@ -2,9 +2,9 @@
 
 namespace Umap.Api.Services
 {
-    public interface IPaddleOcr
+    public interface ITesseractOcr
     {
-        string ReadDigitsFromImage(Bitmap image);
         string ReadTextFromImage(Bitmap image);
+        string ReadNumbersAndSignsFromImage(Bitmap image);
     }
 }
