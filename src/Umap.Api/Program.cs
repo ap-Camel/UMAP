@@ -30,6 +30,7 @@ namespace Umap.Api
                 builder.Services.AddSingleton<IPaddleOcr, PaddleOcr>();
                 builder.Services.AddSingleton<ITesseractOcr, TesseractOcr>();
                 builder.Services.AddSingleton<IStatsValueReader, StatsValueReader>();
+                builder.Services.AddSingleton<IDigitsMatcher, DigitsMatcher>();
 
                 builder.Services.AddSingleton<IScreenCaptureService, ScreenCaptureService>();
                 builder.Services.AddSingleton<IScreenCropService, ScreenCropService>();

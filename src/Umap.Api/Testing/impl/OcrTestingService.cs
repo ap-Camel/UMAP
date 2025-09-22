@@ -12,12 +12,14 @@ namespace Umap.Api.Testing.impl
         private readonly IPaddleOcr _paddleOcr;
         private readonly ITesseractOcr _tesseractOcr;
         private readonly IStatsValueReader _statsValueReader;
+        private readonly IDigitsMatcher _digitsMatcher;
 
-        public OcrTestingService(IPaddleOcr padder, ITesseractOcr tesseractOcr, IStatsValueReader statsValueReader)
+        public OcrTestingService(IPaddleOcr padder, ITesseractOcr tesseractOcr, IStatsValueReader statsValueReader, IDigitsMatcher digitsMatcher)
         {
             _paddleOcr = padder;
             _tesseractOcr = tesseractOcr;
             _statsValueReader = statsValueReader;
+            _digitsMatcher = digitsMatcher;
         }
 
         public OcrTestingResult FeatureMatchingSolutionTesting()
@@ -32,6 +34,30 @@ namespace Umap.Api.Testing.impl
 
                 var expected = image.Key.Split('_').Last();
                 var actual = _statsValueReader.MatchDigits(image.Value.ToMat());
+
+                Console.WriteLine($"file name: {image.Key}, expected name: {expected}, actual name: {actual}");
+                if (expected.ToLower() == actual.ToLower())
+                    results.Passed++;
+
+                results.OcrTestings.Add(new OcrTesting { Expected = expected, Actual = actual, FileName = image.Key });
+                image.Value.Dispose();
+            }
+
+            return results;
+        }
+
+        public OcrTestingResult TemplateMatchingSolutionTesting()
+        {
+            var images = GetAllCharacterIconTemplates();
+            var results = new OcrTestingResult();
+            results.OcrTestings = new List<OcrTesting>();
+            foreach (var image in images)
+            {
+                if (!image.Key.Contains("+"))
+                    continue;
+
+                var expected = image.Key.Split('_').Last();
+                var actual = _digitsMatcher.MatchDigits(image.Value.ToMat());
 
                 Console.WriteLine($"file name: {image.Key}, expected name: {expected}, actual name: {actual}");
                 if (expected.ToLower() == actual.ToLower())

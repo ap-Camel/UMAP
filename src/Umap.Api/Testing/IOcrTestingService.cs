@@ -5,6 +5,7 @@ namespace Umap.Api.Testing
     public interface IOcrTestingService
     {
         OcrTestingResult FeatureMatchingSolutionTesting();
+        OcrTestingResult TemplateMatchingSolutionTesting();
         OcrTestingResult TestingPaddleOcr();
         OcrTestingResult TestingPaddleOcrDigits();
         OcrTestingResult TestingTesseract();
