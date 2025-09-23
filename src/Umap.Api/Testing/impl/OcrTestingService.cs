@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using Tesseract;
 using Umap.Api.Services;
+using Umap.Api.Services.impl;
 
 namespace Umap.Api.Testing.impl
 {
@@ -13,13 +14,16 @@ namespace Umap.Api.Testing.impl
         private readonly ITesseractOcr _tesseractOcr;
         private readonly IStatsValueReader _statsValueReader;
         private readonly IDigitsMatcher _digitsMatcher;
+        private readonly IDigitsChamferMatch _digitsChamferMatch;
 
-        public OcrTestingService(IPaddleOcr padder, ITesseractOcr tesseractOcr, IStatsValueReader statsValueReader, IDigitsMatcher digitsMatcher)
+        public OcrTestingService(IPaddleOcr padder, ITesseractOcr tesseractOcr, IStatsValueReader statsValueReader, IDigitsMatcher digitsMatcher, 
+            IDigitsChamferMatch digitsChamferMatch)
         {
             _paddleOcr = padder;
             _tesseractOcr = tesseractOcr;
             _statsValueReader = statsValueReader;
             _digitsMatcher = digitsMatcher;
+            _digitsChamferMatch = digitsChamferMatch;
         }
 
         public OcrTestingResult FeatureMatchingSolutionTesting()
@@ -58,6 +62,30 @@ namespace Umap.Api.Testing.impl
 
                 var expected = image.Key.Split('_').Last();
                 var actual = _digitsMatcher.MatchDigits(image.Value.ToMat());
+
+                Console.WriteLine($"file name: {image.Key}, expected name: {expected}, actual name: {actual}");
+                if (expected.ToLower() == actual.ToLower())
+                    results.Passed++;
+
+                results.OcrTestings.Add(new OcrTesting { Expected = expected, Actual = actual, FileName = image.Key });
+                image.Value.Dispose();
+            }
+
+            return results;
+        }
+
+        public OcrTestingResult ChampherMatchingSolutionTesting()
+        {
+            var images = GetAllCharacterIconTemplates();
+            var results = new OcrTestingResult();
+            results.OcrTestings = new List<OcrTesting>();
+            foreach (var image in images)
+            {
+                if (!image.Key.Contains("+"))
+                    continue;
+
+                var expected = image.Key.Split('_').Last();
+                var actual = _digitsChamferMatch.MatchDigits(image.Value.ToMat());
 
                 Console.WriteLine($"file name: {image.Key}, expected name: {expected}, actual name: {actual}");
                 if (expected.ToLower() == actual.ToLower())

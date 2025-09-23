@@ -6,6 +6,7 @@ namespace Umap.Api.Testing
     {
         OcrTestingResult FeatureMatchingSolutionTesting();
         OcrTestingResult TemplateMatchingSolutionTesting();
+        OcrTestingResult ChampherMatchingSolutionTesting();
         OcrTestingResult TestingPaddleOcr();
         OcrTestingResult TestingPaddleOcrDigits();
         OcrTestingResult TestingTesseract();

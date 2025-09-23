@@ -31,6 +31,7 @@ namespace Umap.Api
                 builder.Services.AddSingleton<ITesseractOcr, TesseractOcr>();
                 builder.Services.AddSingleton<IStatsValueReader, StatsValueReader>();
                 builder.Services.AddSingleton<IDigitsMatcher, DigitsMatcher>();
+                builder.Services.AddSingleton<IDigitsChamferMatch, DigitsChamferMatch>();
 
                 builder.Services.AddSingleton<IScreenCaptureService, ScreenCaptureService>();
                 builder.Services.AddSingleton<IScreenCropService, ScreenCropService>();

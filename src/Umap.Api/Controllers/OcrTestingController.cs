@@ -60,5 +60,11 @@ namespace Umap.Api.Controllers
         {
             return _testingOcr.TemplateMatchingSolutionTesting();
         }
+
+        [HttpPost("testChamferMatching")]
+        public async Task<ActionResult<OcrTestingResult>> TestChamferMatching()
+        {
+            return _testingOcr.ChampherMatchingSolutionTesting();
+        }
     }
 }
