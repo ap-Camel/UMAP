@@ -47,7 +47,17 @@ namespace Umap.Api.Services.impl
                     temp.Add(new Size(digit.Value.Width + i, digit.Value.Height + i));
                 }
 
-                var bestMatch = MultiScaleChamferMatching(resized, digit.Value.ToMat(), temp);
+                var bestMatch = MultiScaleChamferMatching4(resized, digit.Value.ToMat(), temp);
+                var ordered = bestMatch.OrderBy(x => x.Score);
+                var smalleds = ordered.First();
+                var largest = ordered.Last();
+
+                CvInvoke.Imshow("source", largest.source);
+                CvInvoke.Imshow("template", largest.template);
+                CvInvoke.WaitKey();
+
+                Console.WriteLine("something");
+
                 //if (bestMatch == null || bestMatch.maxVal < 0.65d)
                 //    continue;
 
@@ -112,7 +122,13 @@ namespace Umap.Api.Services.impl
 
                 // 3) Slide via filter2D => mean distance under template edges
                 using var score = new Mat();
-                CvInvoke.Filter2D(imageDistance, score, kernel, new Point(-1, -1), 0.0, BorderType.Reflect101);
+                var srcSize = imageDistance.Size;
+                var srcChannel = imageDistance.NumberOfChannels;
+
+                var kernalSize = kernel.Size;
+                var kernalChan = kernel.NumberOfChannels;
+
+                CvInvoke.Filter2D(imageDistance, score, kernel, new Point(-1, -1));
 
                 // 4) Get top local minima with simple NMS
                 int topK = 3;
@@ -125,6 +141,312 @@ namespace Umap.Api.Services.impl
             }
 
             return allPeaks;
+        }
+
+        public List<Detection> MultiScaleChamferMatching2(Mat image, Mat digit, List<Size> sizes)
+        {
+            // Precompute haystack edges once
+            using var imgGray = ToGray(image);                  // <-- your existing helper
+            using var imgEdges8u = CannyEdges(imgGray);         // 1-ch, 8U, 0/255
+            using var imgEdges = new Mat();
+            imgEdges8u.ConvertTo(imgEdges, DepthType.Cv32F, 1.0 / 255.0); // 0/1 float
+
+            var all = new List<Detection>();
+
+            foreach (var size in sizes)
+            {
+                if (size.Width > image.Width || size.Height > image.Height)
+                {
+                    Console.WriteLine($"size became bigger than image. image width: {image.Width}, image height: {image.Height}, template width: {size.Width}, template height: {size.Height}");
+                    break;
+                }
+
+                // Build template DT kernel (edges -> invert -> DT)
+                using var templ = new Mat();
+                CvInvoke.Resize(digit, templ, size, interpolation: Inter.Linear);
+
+                using var templGray = ToGray(templ);
+                using var templEdges = CannyEdges(templGray);              // 8U, 0/255
+                using var dtKernel = TemplateDistanceToEdges(templEdges); // CV_32F, 1-ch
+
+                // conv = sum(E * Dt) at each position (same size as image)
+                using var conv = new Mat(image.Size, DepthType.Cv32F, 1);
+                CvInvoke.Filter2D(imgEdges, conv, dtKernel, new Point(-1, -1)); // Emgu signature: 4–6 args
+
+                // score = (2*conv - sumDt) / N
+                double sumDt = CvInvoke.Sum(dtKernel).V0;
+                int N = dtKernel.Rows * dtKernel.Cols;
+                using var score = new Mat();
+                conv.ConvertTo(score, DepthType.Cv32F, 2.0 / N, -sumDt / N);
+
+                // Pick local minima (low is good)
+                const int topK = 3;
+                using var scoreImg = score.ToImage<Gray, float>();
+
+                // Only accept locations where the template fits (avoid padded borders)
+                int ax = dtKernel.Width / 2;   // anchor (OpenCV centers kernel)
+                int ay = dtKernel.Height / 2;
+
+                foreach (var p in TopLocalMinima(score, dtKernel.Size, topK))
+                {
+                    if (p.X - ax < 0 || p.Y - ay < 0 ||
+                        p.X + (dtKernel.Width - ax) > image.Width ||
+                        p.Y + (dtKernel.Height - ay) > image.Height)
+                    {
+                        continue; // outside valid area
+                    }
+
+                    float val = scoreImg.Data[p.Y, p.X, 0];
+                    all.Add(new Detection { Center = p, Score = val, Size = size });
+                }
+            }
+
+            return all;
+        }
+
+        public List<Detection> MultiScaleChamferMatching3(Mat image, Mat digit, List<Size> sizes)
+        {
+            var imageGray = ToGray(image);
+            var imageEdges = CannyEdges(imageGray);
+            var imageDistance = DistanceMapOfEdges(imageEdges);
+
+            var allPeaks = new List<Detection>();
+
+            foreach(var size in sizes)
+            {
+                var template = new Mat();
+                CvInvoke.Resize(digit, template, size, interpolation: Inter.Linear);
+
+                var templateGray = ToGray(template);
+                var templateEdges = CannyEdges(templateGray);
+                var templateDistance = DistanceMapOfEdges(templateEdges);
+
+                var list = ChamferMatch(imageEdges, templateEdges, 0, 0);
+                var small = list.OrderBy(x => x.Score).ToList();
+                var smallest = small.First();
+                var biggest = small.Last();
+                smallest.Size = size;
+                allPeaks.Add(biggest);
+            }
+
+            return allPeaks;
+        }
+
+        public List<Detection> ChamferMatch(Mat source, Mat template, int stepsIteration, float threshold)
+        {
+            var xIterations = source.Width - template.Width;
+            var yIterations = source.Height - template.Height;
+
+            var list = new List<Detection>();
+
+            var distanceTemplate = DistanceMapOfEdges(template);
+            var iteration = 0;
+            for (int i = 0; i < xIterations; i++)
+            {
+                for (int j = 0; j < yIterations; j++)
+                {
+                    iteration++;
+
+                    var slice = new Mat(source, new Rectangle(i, j, template.Width, template.Height));
+                    if (slice.Width != template.Width || slice.Height != template.Height)
+                    {
+                        Console.WriteLine($"slice and template size mismatch. slice width and height: {slice.Width},{slice.Height}. template: {template.Width},{template.Height}");
+                        break;
+                    }
+
+                    //if(iteration % 100 == 0)
+                    //{
+                    //    //CvInvoke.Imshow("source:", source);
+                    //    CvInvoke.Imshow($"sllice iteration: {iteration}", slice);
+                    //    CvInvoke.WaitKey();
+                    //    Console.WriteLine("smething");
+                    //}
+
+                    var score = ChamferScore(slice, distanceTemplate, threshold);
+                    Console.WriteLine($"score: {score}");
+                    list.Add(new Detection
+                    {
+                        x = i,
+                        y = j,
+                        Score = score,
+                    });
+                }
+            }
+
+            return list;
+        }
+
+        private float ChamferScore(Mat image, Mat templateDistance, float threshold)
+        {
+            if (image.IsEmpty || templateDistance.IsEmpty)
+                throw new ArgumentException("Inputs must be non-empty Mats.");
+
+            if (image.Rows != templateDistance.Rows || image.Cols != templateDistance.Cols)
+                throw new ArgumentException("candidate and distanceImage must have the same size.");
+
+            if (image.NumberOfChannels != 1 || templateDistance.NumberOfChannels != 1)
+                throw new ArgumentException("Both Mats must be single-channel.");
+
+            // Ensure CV_32F for both
+            using var candF = new Mat();
+            using var distF = new Mat();
+
+            // If candidate is CV_8U (0/255), scale to [0,1]; otherwise just convert to 32F
+            double alpha = (image.Depth == DepthType.Cv8U) ? (1.0 / 255.0) : 1.0;
+            image.ConvertTo(candF, DepthType.Cv32F, alpha);               // converts & scales if needed
+            templateDistance.ConvertTo(distF, DepthType.Cv32F);                   // distance map as float
+
+            // Safe, fast-enough accessors (no unsafe needed)
+            using var candImg = candF.ToImage<Gray, float>();
+            using var distImg = distF.ToImage<Gray, float>();
+
+            double acc = 0.0;
+            int counter = 0;
+            int rows = candImg.Rows;
+            int cols = candImg.Cols;
+
+            for (int y = 0; y < rows; y++)
+            {
+                for (int x = 0; x < cols; x++)
+                {
+                    float v = candImg.Data[y, x, 0];
+                    if (v >= 1.0f)
+                    {
+                        counter++;
+                        acc += distImg.Data[y, x, 0];
+                    }
+                    else if (v <= 0.0f)
+                    {
+                        counter++;
+                        acc -= distImg.Data[y, x, 0];
+                    }
+                }
+            }
+
+            if (counter == 0)
+                throw new InvalidOperationException("No pixels met the >= 1.0 or <= 0.0 criteria.");
+
+            return (float)(acc / counter);
+        }
+
+        public List<Detection> MultiScaleChamferMatching4(Mat image, Mat digit, List<Size> sizes)
+        {
+            var imageGray = ToGray(image);
+            var imageEdges = CannyEdges(imageGray);
+            var imageDistance = DistanceMapOfEdges(imageEdges);
+
+            var allPeaks = new List<Detection>();
+
+            foreach (var size in sizes)
+            {
+                if (size.Width > image.Width || size.Height > image.Height)
+                {
+                    Console.WriteLine($"size became bigger than image. image width: {image.Width}, image height: {image.Height}, template width: {size.Width}, template height: {size.Height}");
+                    break;
+                }
+
+                var template = new Mat();
+                CvInvoke.Resize(digit, template, size, interpolation: Inter.Linear);
+
+                var templateGray = ToGray(template);
+                var templateEdges = CannyEdges(templateGray);
+                var templateDistance = DistanceMapOfEdges(templateEdges);
+
+                var result = ChamferScore2(imageEdges, templateEdges, imageDistance, templateDistance);
+                var ordered = result.OrderBy(x => x.similarity01).ToList();
+                var smallest = ordered.First();
+                var larges = ordered.Last();
+
+                allPeaks.Add(new Detection
+                {
+                    Score = larges.similarity01,
+                    Size = size,
+                    source = larges.source,
+                    template = larges.template,
+                });
+
+                //var list = ChamferMatch(imageEdges, templateEdges, 0, 0);
+                //var small = list.OrderBy(x => x.Score).ToList();
+                //var smallest = small.First();
+                //var biggest = small.Last();
+                //smallest.Size = size;
+                //allPeaks.Add(biggest);
+            }
+
+            return allPeaks;
+        }
+
+        public List<ChamferResult> ChamferScore2(Mat sourceEdge, Mat templateEdge, Mat souceDistance, Mat templateDistance)
+        {
+
+            var xIterations = sourceEdge.Width - templateEdge.Width;
+            var yIterations = sourceEdge.Height - templateEdge.Height;
+
+            var list = new List<ChamferResult>();
+            var iteration = 0;
+            for (int i = 0; i < xIterations; i++)
+            {
+                for (int j = 0; j < yIterations; j++)
+                {
+                    iteration++;
+
+                    var sliceEdge = new Mat(sourceEdge, new Rectangle(i, j, templateEdge.Width, templateEdge.Height));
+                    var sliceDistance = new Mat(souceDistance, new Rectangle(i, j, templateEdge.Width, templateEdge.Height));
+                    if (sliceEdge.Width != templateEdge.Width || sliceEdge.Height != templateEdge.Height)
+                    {
+                        Console.WriteLine($"slice and template size mismatch. slice width and height: {sliceEdge.Width},{sliceEdge.Height}. template: {templateEdge.Width},{templateEdge.Height}");
+                        break;
+                    }
+
+
+                    //if (iteration % 100 == 0)
+                    //{
+                    //    //CvInvoke.Imshow("source:", sourceEdge);
+                    //    CvInvoke.Imshow($"sllice iteration: {iteration}", sliceEdge);
+                    //    CvInvoke.Imshow("digit", templateEdge);
+                    //    CvInvoke.WaitKey();
+                    //    Console.WriteLine("smething");
+                    //}
+
+                    double ab = CvInvoke.Mean(templateDistance, sliceEdge).V0; // A→B
+                    double ba = CvInvoke.Mean(sliceDistance, templateEdge).V0; // B→A
+                    double symmetric = 0.5 * (ab + ba);
+
+                    // Optional normalization to ~[0,1] similarity (higher = better)
+                    // Normalize by image diagonal to roughly bound values across sizes.
+                    double diag = Math.Sqrt(sourceEdge.Width * (double)sourceEdge.Width + sourceEdge.Height * (double)sourceEdge.Height);
+                    double norm = symmetric / (diag + 1e-9);   // smaller is better
+                    double betaPx = 2.0;                   // how fast similarity decays (≈ allowed avg error)
+                    double similarity01 = Math.Exp(-symmetric / betaPx);  // map to 0..1 (simple monotonic transform)
+
+                    list.Add(new ChamferResult
+                    {
+                        ab = ab,
+                        ba = ba,
+                        symmetric = symmetric,
+                        similarity01 = similarity01,
+                        source = sourceEdge,
+                        template = templateEdge,
+                    });
+
+                }
+            }
+
+            
+
+                // 3) Chamfer distances (means over edge pixels of the other image)
+            return list;
+        }
+
+
+        public class ChamferResult
+        {
+            public double ab {  get; set; }
+            public double ba { get; set; }
+            public double symmetric { get; set; }
+            public double similarity01 { get; set; }
+            public Mat source {  get; set; }
+            public Mat template { get; set; }
         }
 
 
@@ -169,7 +491,8 @@ namespace Umap.Api.Services.impl
             count = CvInvoke.CountNonZero(mask01);
 
             var kernel = new Mat();
-            mask01.ConvertTo(kernel, DepthType.Cv32F, count > 0 ? (1.0 / count) : 1.0, 0.0);
+            var alpha = (1.0 / count);
+            mask01.ConvertTo(kernel, DepthType.Cv32F, count > 0 ? alpha : 1.0, 0.0);
             mask01.Dispose();
 
             return kernel;
@@ -212,6 +535,19 @@ namespace Umap.Api.Services.impl
             return candidates.OrderBy(c => c.val).Take(k).Select(c => c.p);
         }
 
+        /// Build a CV_32F distance-transform kernel for the template:
+        /// edges (8U, 0/255) -> invert so edges are zeros -> distance to nearest edge.
+        private Mat TemplateDistanceToEdges(Mat templEdges8u)
+        {
+            using var inv = new Mat();
+            CvInvoke.BitwiseNot(templEdges8u, inv); // edges become 0, background > 0
+
+            var dt = new Mat();
+            // src must be 8U, 1-ch; dst becomes CV_32F, 1-ch.
+            CvInvoke.DistanceTransform(inv, dt, null, DistType.L2, 3);
+            return dt;
+        }
+
 
         private List<Detection> NmsByIoU(List<Detection> dets, double iouThresh)
         {
@@ -250,6 +586,10 @@ namespace Umap.Api.Services.impl
             public Point Center;     // center of template at best location
             public double Score;     // mean chamfer distance (lower is better)
             public Size Size;
+            public int x;
+            public int y;
+            public Mat source;
+            public Mat template;
         }
 
         public DigitTemplateMatchingResult TemplateMatchForScaleAround(Mat image, Mat digit, List<Size> sizes)
@@ -407,7 +747,7 @@ namespace Umap.Api.Services.impl
 
         public Dictionary<string, Bitmap> LoadDigits()
         {
-            var assetsRelativePath = Path.Combine("C:\\dev\\learning\\gameAutomationLearning", "stats_digits_cleaned");
+            var assetsRelativePath = Path.Combine("C:\\dev\\learning\\gameAutomationLearning", "stats_digits_no_background");
             var allowed = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".png" };
 
             var dict = new Dictionary<string, Bitmap>();
